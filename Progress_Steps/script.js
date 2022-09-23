@@ -1,17 +1,49 @@
-const boxesContainer = document.getElementById('boxes')
-const btn = document.getElementById('btn')
+const progress = document.getElementById('progress')
+const prev = document.getElementById('prev')
+const next = document.getElementById('next')
+const circles = document.querySelectorAll('.circle')
 
-btn.addEventListener('click', () => boxesContainer.classList.toggle('big'))
+let currentActive = 1
 
-function createBoxes() {
-  for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 4; j++) {
-      const box = document.createElement('div')
-      box.classList.add('box')
-      box.style.backgroundPosition = `${-j * 125}px ${-i * 125}px`
-      boxesContainer.appendChild(box)
+next.addEventListener('click', () => {
+    currentActive++
+
+    if(currentActive > circles.length) {
+        currentActive = circles.length
     }
-  }
-}
 
-createBoxes()
+    update()
+})
+
+prev.addEventListener('click', () => {
+    currentActive--
+
+    if(currentActive < 1) {
+        currentActive = 1
+    }
+
+    update()
+})
+
+function update() {
+    circles.forEach((circle, idx) => {
+        if(idx < currentActive) {
+            circle.classList.add('active')
+        } else {
+            circle.classList.remove('active')
+        }
+    })
+
+    const actives = document.querySelectorAll('.active')
+
+    progress.style.width = (actives.length - 1) / (circles.length - 1) * 100 + '%'
+
+    if(currentActive === 1) {
+        prev.disabled = true
+    } else if(currentActive === circles.length) {
+        next.disabled = true
+    } else {
+        prev.disabled = false
+        next.disabled = false
+    }
+}
